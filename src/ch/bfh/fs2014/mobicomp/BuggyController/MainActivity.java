@@ -2,6 +2,7 @@ package ch.bfh.fs2014.mobicomp.BuggyController;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -25,7 +26,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onPreExecute() {
-
+                shouldAbort(true, false);
             }
 
             @Override
@@ -65,11 +66,13 @@ public class MainActivity extends Activity {
         });
 
         final Button buttonUp = (Button) findViewById(R.id.buttonUp);
-        buttonUp.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
+        buttonUp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
             }
         });
+
 
     }
 

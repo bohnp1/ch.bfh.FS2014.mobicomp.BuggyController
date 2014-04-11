@@ -14,6 +14,7 @@ public abstract class TinkerforgeThread extends AsyncTask<String, Void, Boolean>
 
     private static IPConnection ipcon = new IPConnection(); // Create IP connection
     private static BrickDC dcLeft = new BrickDC("6wW1Yj", ipcon); // Create device object
+    private static BrickDC dcRight = new BrickDC("6jEWMX", ipcon); // Create device object
 
     private static MainActivity mainActivity;
 
@@ -57,7 +58,12 @@ public abstract class TinkerforgeThread extends AsyncTask<String, Void, Boolean>
         while (!mainActivity.shouldAbort(false, false)) {
 
             try {
-                Thread.sleep(100);
+
+
+
+                Thread.sleep(10);
+                publishProgress();
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

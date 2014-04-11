@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import ch.quantasy.tinkerforge.tinker.agency.implementation.TinkerforgeStackAgency;
+import android.widget.TextView;
 import com.tinkerforge.*;
 
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class MainActivity extends Activity {
      * Called when the activity is first created.
      */
 
-    private static final String HOST = "localhost";
+    private static final String HOST = "192.168.43.224";
     private static final int PORT = 4223;
     private static final String UID = "aetiNB3mX2u"; // Change to your UID
 
@@ -51,6 +51,10 @@ public class MainActivity extends Activity {
             dc.enable();
             dc.setAcceleration(5000); // Slow acceleration
             dc.setVelocity((short)32767); // Full speed forward
+
+
+            final TextView textViewLog = (TextView) findViewById(R.id.textViewLog);
+            textViewLog.setText("connected =)");
 
         } catch (IOException e) {
             e.printStackTrace();

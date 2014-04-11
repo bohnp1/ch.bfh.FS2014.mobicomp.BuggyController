@@ -33,10 +33,10 @@ public class MainActivity extends Activity {
             }
         });
 
-        final TinkerforgeApplication the17HerzApplication = TinkerforgeApplication.getInstance(); // new The17HerzApplication();
+        //final TinkerforgeApplication the17HerzApplication = TinkerforgeApplication.getInstance(); // new The17HerzApplication();
 
 
-        TinkerforgeStackAgency.getInstance().getStackAgent(TinkerforgeApplication.BARO_SENSOR).addApplication(the17HerzApplication);
+        //TinkerforgeStackAgency.getInstance().getStackAgent(TinkerforgeApplication.BARO_SENSOR).addApplication(the17HerzApplication);
 
 
         try {
@@ -46,11 +46,11 @@ public class MainActivity extends Activity {
 
             dc.setPWMFrequency(10000); // Use PWM frequency of 10kHz
 
-        dc.setDriveMode((short) 1); // Use 1 = Drive/Coast instead of 0 = Drive/Brake
+            dc.setDriveMode((short) 1); // Use 1 = Drive/Coast instead of 0 = Drive/Brake
 
-        dc.enable();
-        dc.setAcceleration(5000); // Slow acceleration
-        dc.setVelocity((short)32767); // Full speed forward
+            dc.enable();
+            dc.setAcceleration(5000); // Slow acceleration
+            dc.setVelocity((short)32767); // Full speed forward
 
         } catch (IOException e) {
             e.printStackTrace();

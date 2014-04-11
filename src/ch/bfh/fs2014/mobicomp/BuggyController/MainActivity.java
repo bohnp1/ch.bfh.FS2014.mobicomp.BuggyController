@@ -4,21 +4,43 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import com.tinkerforge.*;
-
-import java.io.IOException;
 
 public class MainActivity extends Activity {
     /**
      * Called when the activity is first created.
      */
 
-    private static final String HOST = "192.168.43.224";
-    private static final int PORT = 4223;
+    Boolean abort = false;
 
-    private static IPConnection ipcon = new IPConnection(); // Create IP connection
-    private static BrickDC dcLeft = new BrickDC("6wW1Yj", ipcon); // Create device object
+    TinkerforgeThread tinkerforgeThread = null;
+
+    public TinkerforgeThread getNewTinkerforgeThread() {
+        return new TinkerforgeThread(this) {
+            @Override
+            public void onPostExecute(Boolean result) {
+                final Button buttonConnect = (Button) findViewById(R.id.buttonConnect);
+                buttonConnect.setText("Connect");
+                shouldAbort(true, false);
+            }
+
+            @Override
+            public void onPreExecute() {
+
+            }
+
+            @Override
+            public void onProgressUpdate(Void... values) {
+
+            }
+        };
+    }
+
+    public synchronized boolean shouldAbort(Boolean isSet, Boolean newValue) {
+        if(isSet) {
+            abort = newValue;
+        }
+        return abort;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,31 +50,16 @@ public class MainActivity extends Activity {
         final Button buttonConnect = (Button) findViewById(R.id.buttonConnect);
         buttonConnect.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                try {
-                    ipcon.connect(HOST, PORT); // Connect to brickd
 
-                    // Don't use device before ipcon is connected
+                if(buttonConnect.getText().equals("Disconnect")) {
+                    shouldAbort(true, true);
 
-                    dcLeft.setPWMFrequency(10000); // Use PWM frequency of 10kHz
+                }
+                else {
+                    buttonConnect.setText("Disconnect");
 
-                    dcLeft.setDriveMode((short) 1); // Use 1 = Drive/Coast instead of 0 = Drive/Brake
-
-                    dcLeft.enable();
-                    dcLeft.setAcceleration(5000); // Slow acceleration
-                    dcLeft.setVelocity((short)32767); // Full speed forward
-
-
-                    final TextView textViewLog = (TextView) findViewById(R.id.textViewLog);
-                    textViewLog.setText("connected =)");
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (AlreadyConnectedException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
-                    e.printStackTrace();
-                } catch (NotConnectedException e) {
-                    e.printStackTrace();
+                    tinkerforgeThread = getNewTinkerforgeThread();
+                    tinkerforgeThread.execute();
                 }
             }
         });
@@ -64,31 +71,12 @@ public class MainActivity extends Activity {
             }
         });
 
-
-        //final TinkerforgeApplication the17HerzApplication = TinkerforgeApplication.getInstance(); // new The17HerzApplication();
-
-
-        //TinkerforgeStackAgency.getInstance().getStackAgent(TinkerforgeApplication.BARO_SENSOR).addApplication(the17HerzApplication);
-
-
-
-
-        //System.console().readLine("Press key to exit\n");
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        //final TinkerforgeApplication the17HerzApplication = TinkerforgeApplication.getInstance(); // new The17HerzApplication();
-
-        //TinkerforgeStackAgency.getInstance().getStackAgent(TinkerforgeApplication.BARO_SENSOR).removeApplication(the17HerzApplication);
-
-        try {
-            ipcon.disconnect();
-        } catch (NotConnectedException e) {
-            e.printStackTrace();
-        }
+        shouldAbort(true, true);
     }
 }
